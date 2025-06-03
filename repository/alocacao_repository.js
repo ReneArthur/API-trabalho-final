@@ -37,15 +37,9 @@ function inserir(alocacao) {
             return;
     }
 
-    const produto = produtoRepository.buscarPorId(alocacao.idProduto)
-
-    if(produto) {
-        alocacao.id = autoIncrement++;
-        listaAlocacao.push(alocacao);
-        return alocacao;    
-    } else {
-        return
-    }
+    alocacao.id = autoIncrement++;
+    listaAlocacao.push(alocacao);
+    return alocacao;
 }
 
 function buscarIndicePorId(id) {
@@ -56,11 +50,6 @@ function atualizar(id, alocacaoAtual) {
     if(!alocacaoAtual || !alocacaoAtual.local || !alocacaoAtual.idProduto || 
         !alocacaoAtual.quantidade) {
             return;
-    }
-
-    produto = produtoRepository.buscarPorId(alocacaoAtual.idProduto)
-    if(!produto) {
-        return
     }
     
     let indice = buscarIndicePorId(id);

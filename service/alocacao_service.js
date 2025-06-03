@@ -8,6 +8,7 @@ function listar() {
 function inserir(alocacao) {
     if(alocacao && alocacao.local && alocacao.idProduto && 
         alocacao.quantidade) {
+            
             const produto = produtoRepository.buscarPorId(alocacao.idProduto)
             if(produto) {
                 return alocacaoRepository.inserir(alocacao);
@@ -42,6 +43,12 @@ function buscarPorIdProduto(produtoId) {
 function atualizar(id, alocacao) {
     if(alocacao && alocacao.local && alocacao.idProduto && 
         alocacao.quantidade) {
+        
+        produto = produtoRepository.buscarPorId(alocacao.idProduto)
+        if(!produto) {
+            throw {id:400, msg: "Id do produto não existe"};
+        }
+        
         const alocacaoAtualizado = alocacaoRepository.atualizar(id, alocacao);
         if(alocacaoAtualizado) {
             return alocacaoAtualizado;
