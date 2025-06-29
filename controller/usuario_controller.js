@@ -1,60 +1,65 @@
 const usuarioService = require("../service/usuario_service")
 
-function listar(req, res) {
+async function listar(req, res) {
 
     const email = req.query ? req.query.email : undefined
 
     try {
 
         if(!email) {
-            res.json(usuarioService.listar())
+            res.json(await usuarioService.listar())
         } else {
-            res.json(usuarioService.buscarPorEmail(email))
+            res.json(await usuarioService.buscarPorEmail(email))
         }
     } catch(err) {
-        res.status(err.id).json(err)
+        res.status(err.id || 500).json(err)
     }
 }
 
-function inserir(req, res) {
+async function inserir(req, res) {
     let usuario = req.body
-
     try {
-        usuarioService.inserir(usuario)
-        res.status(201).json(usuario)
+        console.log("body")
+        console.log(usuario)
+        
+        // throw {status: 402, toString: () => "mensagem customizada ebaaa"}
+        
+        const usuarioAdicionado = await usuarioService.inserir(usuario)
+        res.status(201).json(usuarioAdicionado)
     } catch(err) {
-        res.status(err.id).json(err)
+        res.status(err.id || 500).json(err)
     }
+    
 }
 
-function buscarPorEmail(req, res) {
+async function buscarPorEmail(req, res) {
     const email = req.params.email;
     // TODO: excluir aqui depois que a busca por email estiver inserida no lista()
     try {
-        res.json(usuarioService.buscarPorEmail(email))
+        res.json(await usuarioService.buscarPorEmail(email))
     } catch(err) {
-        res.status(err.id).json(err)
+        res.status(err.id || 500).json(err)
     }
 }
 
-function atualizar(req, res) {
+async function atualizar(req, res) {
     const id = parseInt(req.params.id);
     let usuario = req.body
 
     try {
-        res.json(usuarioService.atualizar(id, usuario))
+        res.json(await usuarioService.atualizar(id, usuario))
     } catch(err) {
-        res.status(err.id).json(err)
+        res.status(err.id || 500).json(err)
     }
 }
 
-function deletar(req, res) {
+async function deletar(req, res) {
     const id = parseInt(req.params.id);
     
     try {
-        res.json(usuarioService.deletar(id))
+        res.json(await usuarioService.deletar(id))
     } catch(err) {
-        res.status(err.id).json(err)
+        res.status(err.id || 500).json(err)
     }
 }
 

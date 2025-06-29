@@ -1,4 +1,4 @@
-const usuarioRepository = require('../repository/usuario_repository')
+const usuarioRepository = require('../repository/usuario_repository_db')
 const tokenService = require('./token_service')
 const bcrypt = require('bcrypt')
 
@@ -9,23 +9,30 @@ function encriptografar(senha) {
     return hash
 }
 
-function listar() {
-    return usuarioRepository.listar();
+async function listar() {
+    return await usuarioRepository.listar();
 }
 
-function inserir(usuario) {
+async function inserir(usuario) {
     if(usuario && usuario.email  
-        && usuario.senha){
+        && usuario.senha && usuario.superuser !== undefined){
+
+            // const usuarioExistente = await usuarioRepository.buscarPorEmail(usuario.email)
+            // if(usuarioExistente) {
+            //     throw { id: 400, msg: "Email de usuário já existe"}
+            // }
+
             usuario.senha = encriptografar(usuario.senha)
-            return usuarioRepository.inserir(usuario);
+            return await usuarioRepository.inserir(usuario);
     }
+
     else {
         throw { id: 400, msg: "Usuario sem dados corretos"}
     }
 }
 
-function buscarPorEmail(email) {
-    let usuario = usuarioRepository.buscarPorEmail(email);
+async function buscarPorId(id) {
+    let usuario = await usuarioRepository.buscarPorId(id);
     if(usuario) {
         return usuario;
     }
@@ -34,22 +41,39 @@ function buscarPorEmail(email) {
     }
 }
 
-function verificarLogin(user) {
-    if(user.email) {
-        let usuarioCadastrado = usuarioRepository.buscarPorEmail(user.email);
-        if(usuarioCadastrado && user.senha && bcrypt.compareSync(user.senha, usuarioCadastrado.senha)) {
-            token = tokenService.criarToken({id: usuarioCadastrado.id})
-            return {token}
-        } else {
-            throw {id: 401, msg: "Email ou senha inválidos"}
-        }
+async function buscarPorEmail(email) {
+    let usuario = await usuarioRepository.buscarPorEmail(email);
+    if(usuario) {
+        return usuario;
+    }
+    else {
+        throw { id: 404, msg: "Usuário não encontrado!" }
     }
 }
 
-function atualizar(id, usuario) {
+async function verificarLogin(user) {
+    if(!user?.email || !user?.senha) {
+        throw {id: 400, msg: "login deve conter email e senha"}
+    }
+    
+    let usuarioCadastrado = await usuarioRepository.buscarPorEmail(user.email);
+    if(usuarioCadastrado && user.senha && bcrypt.compareSync(user.senha, usuarioCadastrado.senha)) {
+        token = tokenService.criarToken({id: usuarioCadastrado.id})
+        return {token}
+    } else {
+        throw {id: 401, msg: "Email ou senha inválidos"}
+    }
+}
+
+async function atualizar(id, usuario) {
     if(usuario && usuario.email && usuario.senha) {
+        // const usuarioExistente = await usuarioRepository.buscarPorEmail(usuario.email)
+        // if(usuarioExistente && usuarioExistente.id !== id) {
+        //     throw { id: 400, msg: "Email de usuário já existe"}
+        // }
+
         usuario.senha = encriptografar(usuario.senha)
-        const usuarioAtualizado = usuarioRepository.atualizar(id, usuario);
+        const usuarioAtualizado = await usuarioRepository.atualizar(id, usuario);
         if(usuarioAtualizado) {
             return usuarioAtualizado;
         }        
@@ -62,7 +86,7 @@ function atualizar(id, usuario) {
     }
 }
 
-function deletar(id) {
+async function deletar(id) {
     let usuario = usuarioRepository.deletar(id);
     if(usuario) {
         return usuario;
@@ -72,11 +96,14 @@ function deletar(id) {
     }
 }
 
+
+
 module.exports = {
     listar,
     inserir,
     buscarPorEmail,
     atualizar,
     deletar,
-    verificarLogin
+    verificarLogin,
+    buscarPorId
 }

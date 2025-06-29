@@ -1,28 +1,23 @@
-const alocacaoRepository = require('../repository/alocacao_repository')
-const produtoRepository = require('../repository/produto_repository')
+const alocacaoRepository = require('../repository/alocacao_repository_db')
 
-function listar() {
-    return alocacaoRepository.listar();
+async function listar() {
+    return await alocacaoRepository.listar();
 }
 
-function inserir(alocacao) {
+async function inserir(alocacao) {
     if(alocacao && alocacao.local && alocacao.idProduto && 
         alocacao.quantidade) {
             
-            const produto = produtoRepository.buscarPorId(alocacao.idProduto)
-            if(produto) {
-                return alocacaoRepository.inserir(alocacao);
-            } else {
-                throw {id: 400, msg: "Id do produto não existe"}
-            }
+        const produto = await alocacaoRepository.inserir(alocacao);
+        
     }
     else {
         throw { id: 400, msg: "Alocação sem dados corretos"}
     }
 }
 
-function buscarPorId(id) {
-    let alocacao = alocacaoRepository.buscarPorId(id);
+async function buscarPorId(id) {
+    let alocacao = await alocacaoRepository.buscarPorId(id);
     if(alocacao) {
         return alocacao;
     }
@@ -31,8 +26,8 @@ function buscarPorId(id) {
     }
 }
 
-function buscarPorIdProduto(produtoId) {
-    let alocacao = alocacaoRepository.buscarPorIdProduto(produtoId);
+async function buscarPorIdProduto(produtoId) {
+    let alocacao = await alocacaoRepository.buscarPorIdProduto(produtoId);
     if(alocacao) {
         return alocacao;
     } else {
@@ -40,16 +35,11 @@ function buscarPorIdProduto(produtoId) {
     }
 }
 
-function atualizar(id, alocacao) {
+async function atualizar(id, alocacao) {
     if(alocacao && alocacao.local && alocacao.idProduto && 
         alocacao.quantidade) {
         
-        produto = produtoRepository.buscarPorId(alocacao.idProduto)
-        if(!produto) {
-            throw {id:400, msg: "Id do produto não existe"};
-        }
-        
-        const alocacaoAtualizado = alocacaoRepository.atualizar(id, alocacao);
+        const alocacaoAtualizado = await alocacaoRepository.atualizar(id, alocacao);
         if(alocacaoAtualizado) {
             return alocacaoAtualizado;
         }        
@@ -62,8 +52,8 @@ function atualizar(id, alocacao) {
     }
 }
 
-function deletar(id) {
-    let alocacao = alocacaoRepository.deletar(id);
+async function deletar(id) {
+    let alocacao = await alocacaoRepository.deletar(id);
     if(alocacao) {
         return alocacao;
     }

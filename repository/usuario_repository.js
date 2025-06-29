@@ -2,8 +2,9 @@
 let listaUsuarios = [{
     id: 1,
     email: "email@email.com",
-    senha: "$2b$10$f.V2O8sGtryhEBN9iJ2RS.FrliWv1NCftZVnzzKw8EBsRd.1iWqRu" 
+    senha: "$2b$10$f.V2O8sGtryhEBN9iJ2RS.FrliWv1NCftZVnzzKw8EBsRd.1iWqRu",
     //senha: "senha123456"
+    superuser: true
 }];
 let autoIncrement = 2;
 
@@ -11,7 +12,7 @@ function listar() {
     // retirado o hash da senha pro usuário, porém, coloquei o console.log apenas 
     // para a demonstração do hash funcionando para o trabalho
     console.log(listaUsuarios)
-    return listaUsuarios.map(user => ({id: user.id, email: user.email}));
+    return listaUsuarios.map(user => ({id: user.id, email: user.email, superuser: user.superuser}));
 }
 
 function buscarPorEmail(email) {
@@ -22,13 +23,22 @@ function buscarPorEmail(email) {
     ));
 }
 
+function buscarPorId(id) {
+    return (listaUsuarios.find(
+        function(usuario) {
+            return (usuario.id === id);        
+        }
+    ));
+}
+
 function inserir(usuario) {
-    if(!usuario || !usuario.email || !usuario.senha) {
+    if(!usuario || !usuario.email || !usuario.senha || usuario.superuser === undefined) {
             return;
     }
 
     usuario.id = autoIncrement++;
-    listaUsuarios.push(usuario);
+    const usuarioPadrao = {...usuario, superuser: usuario.superuser}
+    listaUsuarios.push(usuarioPadrao);
     return usuario;
 }
 
@@ -71,4 +81,5 @@ module.exports = {
     buscarPorEmail,
     atualizar,
     deletar,
+    buscarPorId
 }

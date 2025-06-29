@@ -1,10 +1,10 @@
 const usuarioService = require("../service/usuario_service")
 
-function realizarLogin(req, res) {
+async function realizarLogin(req, res) {
     let usuario = req.body
     try {
-        let mensagem = usuarioService.verificarLogin(usuario);
-        res.status(201).json(mensagem)
+        let mensagem = await usuarioService.verificarLogin(usuario);
+        res.status(200).json(mensagem)
     } catch(err) {
         res.status(err.id).json(err);
     }

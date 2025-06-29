@@ -1,57 +1,69 @@
 const alocacaoService = require("../service/alocacao_service")
 
-function listar(req, res) {
-    res.json(alocacaoService.listar())
+async function listar(req, res) {
+    res.json(await alocacaoService.listar())
 }
 
-function inserir(req, res) {
+async function inserir(req, res) {
     let produto = req.body
     try {
-        alocacaoService.inserir(produto)
+        await alocacaoService.inserir(produto)
         res.status(201).json(produto)
     } catch(err) {
-        res.status(err.id).json(err)
+        if(err.id) {
+            res.status(err.id).json(err)
+        } else if(err.code && err.code === "23503" && err.constraint === "alocacao_idProduto_fkey") {
+            res.status(409).json({id: 409, msg: "Produto não existe"})
+        } else {
+            res.status(500).json(err)
+        }
     }
 }
 
-function buscarPorId(req, res) {
-    const id = parseInt(req.params.id);
+async function buscarPorId(req, res) {
+    const id = await parseInt(req.params.id);
 
     try {
-        res.json(alocacaoService.buscarPorId(id))
+        res.json(await alocacaoService.buscarPorId(id))
     } catch(err) {
-        res.status(err.id).json(err)
+        res.status(err.id || 500).json(err)
     }
 }
 
-function buscarPorIdProduto(req, res) {
+async function buscarPorIdProduto(req, res) {
     const idProduto = parseInt(req.params.idProduto);
 
     try {
-        res.json(alocacaoService.buscarPorIdProduto(idProduto))
+        res.json(await alocacaoService.buscarPorIdProduto(idProduto))
     } catch(err) {
-        res.status(err.id).json(err)
+        res.status(err.id || 500).json(err)
     }
 }
 
-function atualizar(req, res) {
+async function atualizar(req, res) {
     const id = parseInt(req.params.id);
     let produto = req.body
 
     try {
-        res.json(alocacaoService.atualizar(id, produto))
+        res.json(await alocacaoService.atualizar(id, produto))
     } catch(err) {
-        res.status(err.id).json(err)
+        if(err.id) {
+            res.status(err.id).json(err)
+        } else if(err.code && err.code === "23503" && err.constraint === "alocacao_idProduto_fkey") {
+            res.status(409).json({id: 409, msg: "Produto não existe"})
+        } else {
+            res.status(500).json(err)
+        }
     }
 }
 
-function deletar(req, res) {
+async function deletar(req, res) {
     const id = parseInt(req.params.id);
     
     try {
-        res.json(alocacaoService.deletar(id))
+        res.json(await alocacaoService.deletar(id))
     } catch(err) {
-        res.status(err.id).json(err)
+        res.status(err.id || 500).json(err)
     }
 }
 
