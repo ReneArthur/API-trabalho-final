@@ -1,7 +1,0 @@
-{
-    "code-runner.executorMapByFileExtension": {
-        "*.test.js": "npm run test",
-    },
-    "jest.runMode": "on-demand"
-
-}
