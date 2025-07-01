@@ -16,12 +16,6 @@ async function listar() {
 async function inserir(usuario) {
     if(usuario && usuario.email  
         && usuario.senha && usuario.superuser !== undefined){
-
-            // const usuarioExistente = await usuarioRepository.buscarPorEmail(usuario.email)
-            // if(usuarioExistente) {
-            //     throw { id: 400, msg: "Email de usuário já existe"}
-            // }
-
             usuario.senha = encriptografar(usuario.senha)
             return await usuarioRepository.inserir(usuario);
     }
@@ -67,11 +61,6 @@ async function verificarLogin(user) {
 
 async function atualizar(id, usuario) {
     if(usuario && usuario.email && usuario.senha) {
-        // const usuarioExistente = await usuarioRepository.buscarPorEmail(usuario.email)
-        // if(usuarioExistente && usuarioExistente.id !== id) {
-        //     throw { id: 400, msg: "Email de usuário já existe"}
-        // }
-
         usuario.senha = encriptografar(usuario.senha)
         const usuarioAtualizado = await usuarioRepository.atualizar(id, usuario);
         if(usuarioAtualizado) {
@@ -87,7 +76,7 @@ async function atualizar(id, usuario) {
 }
 
 async function deletar(id) {
-    let usuario = usuarioRepository.deletar(id);
+    let usuario = await usuarioRepository.deletar(id);
     if(usuario) {
         return usuario;
     }

@@ -48,7 +48,6 @@ async function deletar(req, res) {
         } else {
             res.status(500).json(err)
         }
-        res.status(err.id || 500).json(err)
     }
 }
 
