@@ -4,7 +4,6 @@ const usuarioRouter = require('./router/usuario_router')
 const alocacaoRouter = require('./router/alocacao_router')
 const loginController = require('./controller/login_controller')
 const authMiddleware = require('./middleware/auth_middleware')
-const erroMiddleware = require('./middleware/erro_middleware')
 
 const app = express()
 
