@@ -59,7 +59,7 @@ describe('Login e Registro de usuários', () => {
     })
     test('Super usuário pode criar outros super usuários', async () => {
         const novoSuperUsuario = {
-            email: "outra@email.com",
+            email: "outra@superteste.com",
             senha: "abcdef",
             superuser: true
         }
@@ -78,7 +78,7 @@ describe('Login e Registro de usuários', () => {
     
     test('Super usuário pode criar um usuário comum', async () => {
         const novoUsuarioComum = {
-            email: "outra2@email.com",
+            email: "outra2@superteste.com",
             senha: "abcdef2",
             superuser: false
         }
@@ -96,7 +96,7 @@ describe('Login e Registro de usuários', () => {
     })
 
     test('Deve ser possível logar como um usuário comum', async () => {
-        const loginComum = {email: "outra2@email.com", senha: "abcdef2"}
+        const loginComum = {email: "outra2@superteste.com", senha: "abcdef2"}
 
         const res = await agent
             .post("/login")
@@ -110,7 +110,7 @@ describe('Login e Registro de usuários', () => {
 
     test('Não deve ser possível criar um superusuário sendo um usuário comum', async () => {
         const novoSuperUsuario = {
-            email: "outra3@email.com",
+            email: "outra3@superteste.com",
             senha: "abcdef3",
             superuser: true
         }
@@ -123,7 +123,7 @@ describe('Login e Registro de usuários', () => {
 
     test('Deve ser possível criar um outro usuário comum sendo um usuário comum', async () => {
         const novoUsuarioComum = {
-            email: "outra3@email.com",
+            email: "outra3@superteste.com",
             senha: "abcdef3",
             superuser: false
         }
