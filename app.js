@@ -10,8 +10,6 @@ const app = express()
 
 app.use(express.json())
 
-app.use(erroMiddleware.tratarErro)
-
 app.get('/', (req, res) => {
     res.send("<h1>App funcionando!</h1>")
 })
